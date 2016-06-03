@@ -5,8 +5,11 @@
 
 // Methods-as-Properties
 var Book = function (name, price) {
-  var priceChanging = [],
-      priceChanged  = [];
+  // array of rules to perform for each event (attempting to change price, pass tests for changing price)
+//  var priceChanging = [],
+  var checksBeforeChangingPrice = [],
+//      priceChanged  = [];
+      priceHasChangedReaction  = [];
   
   this.name = function (val) {
     return name;
@@ -17,19 +20,19 @@ var Book = function (name, price) {
     if (val !== undefined && val !== price) {
       
       // loop though priceChanging array
-      for (var i = 0; i < priceChanging.length; i++) {
+      for (var i = 0; i < checksBeforeChangingPrice.length; i++) {
         
         // if there is no element with this value, return 
 //        console.log("here: " + priceChanging[0]);
-        if (!priceChanging[i](this, val)) {
+        if (!checksBeforeChangingPrice[i](this, val)) {
           return price;
         }
       }
       price = val;
       // loop through priceChanged array
-      for (var i = 0; i < priceChanged.length; i++) {
+      for (var i = 0; i < priceHasChangedReaction.length; i++) {
         // add (this) to each element
-        priceChanged[i](this);
+        priceHasChangedReaction[i](this);
       }
     }
     return price;
@@ -37,12 +40,12 @@ var Book = function (name, price) {
   
   // previously: this.onPriceChanging
   this.addPriceChangingRule = function (callback) {
-    priceChanging.push(callback);
+    checksBeforeChangingPrice.push(callback);
   };
   
   // previously: this.onPriceChanged
   this.newPriceChangedReaction = function (callback) {
-    priceChanged.push(callback);
+    priceHasChangedReaction.push(callback);
   };
 };
 
@@ -65,6 +68,8 @@ book.newPriceChangedReaction(function (b) {
   console.log('The book price has changed to: $' + b.price());
 });
 
+console.log("List " + Book.checksBeforeChangingPrice);
+
 book.addPriceChangingRule(function(b, price) {
   if (price < 10) {
     console.log("$" + price + "is way too cheap for " + b.name());
@@ -72,6 +77,9 @@ book.addPriceChangingRule(function(b, price) {
   }
   return true;
 });
+
+console.log("List " + Book.checksBeforeChangingPrice);
+
 
 book.price(19.99);
 
