@@ -5,11 +5,12 @@
 
 // Methods-as-Properties
 var Book = function (name, price) {
-  // array of rules to perform for each event (attempting to change price, pass tests for changing price)
-//  var priceChanging = [],
+  
+  //Arrays to push callbacks into
+  // The callbacks are rules to perform for each event (attempting to change price, pass tests for changing price)
   var checksBeforeChangingPrice = [],
-//      priceChanged  = [];
-      priceHasChangedReaction  = [];
+      priceHasChangedReaction   = [];
+  
   
   this.name = function (val) {
     return name;
@@ -19,19 +20,21 @@ var Book = function (name, price) {
     // check that val is not undefined and has actually changed
     if (val !== undefined && val !== price) {
       
-      // loop though priceChanging array
+      // loop though priceChanging callbacks, things that might prevent the price being changed
       for (var i = 0; i < checksBeforeChangingPrice.length; i++) {
         
-        // if there is no element with this value, return 
-//        console.log("here: " + priceChanging[0]);
+        // if there is no element with this value, return the price
         if (!checksBeforeChangingPrice[i](this, val)) {
           return price;
         }
       }
+      // Update price
       price = val;
+      
       // loop through priceChanged array
       for (var i = 0; i < priceHasChangedReaction.length; i++) {
-        // add (this) to each element
+        
+        // Loop and run each Reaction rule 
         priceHasChangedReaction[i](this);
       }
     }
@@ -44,9 +47,10 @@ var Book = function (name, price) {
   };
   
   // previously: this.onPriceChanged
-  this.newPriceChangedReaction = function (callback) {
+  this.addPriceChangedReaction = function (callback) {
     priceHasChangedReaction.push(callback);
   };
+  
 };
 
 var book = new Book('Eloquent Javascript', 16.99);
@@ -59,27 +63,24 @@ console.log('The price is $' + book.price());
 book.addPriceChangingRule(function (b, price) {
   if (price > 100) {
     console.log('System error, price has gone unexpectedly high');
-    return false; // stop here
+    return false;
   }
-  return true; // what does this do? forward to new method?
+  return true; // continue
 });
 
-book.newPriceChangedReaction(function (b) {
+
+book.addPriceChangedReaction(function (b) {
   console.log('The book price has changed to: $' + b.price());
 });
 
-console.log("List " + Book.checksBeforeChangingPrice);
 
 book.addPriceChangingRule(function(b, price) {
   if (price < 10) {
-    console.log("$" + price + "is way too cheap for " + b.name());
+    console.log("$" + price + " is way too cheap for " + b.name());
     return false;
   }
   return true;
 });
-
-console.log("List " + Book.checksBeforeChangingPrice);
-
 
 book.price(19.99);
 
