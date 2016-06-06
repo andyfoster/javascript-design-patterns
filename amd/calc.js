@@ -1,27 +1,31 @@
 var Calc = function (start) {
     "use strict";
-    var that = this;
+    var self = this;
 
     this.add = function (x) {
         start = start + x;
+
         return this;
     };
 
     this.multiply = function (x) {
         start = start * x;
+
         return this;
     };
 
     this.equals = function (callback) {
         callback(start);
-        return that;
+
+        return self;
     };
 };
 
-new Calc(0)
-    .add(1)
-    .add(2)
-    .multiply(3)
-    .equals(function (result) {
-      console.log(result);
-    });
+module.exports = {
+    add: function (x, y) {
+       return new Calc(x).add(y || 0);
+    },
+    multiply: function (x, y) {
+        return new Calc(x).multiply(y || 0);
+    }
+};
