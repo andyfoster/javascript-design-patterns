@@ -21,6 +21,12 @@ var Calc = function (start) {
     };
 };
 
+// module.exports = Calc
+// you will need to use new Calc(0);
+// ("new" and constructor value)
+
+// or add this anonymous object:
+// and use Calc.add(9) etc
 module.exports = {
     add: function (x, y) {
        return new Calc(x).add(y || 0);
